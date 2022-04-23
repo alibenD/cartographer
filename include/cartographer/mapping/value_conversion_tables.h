@@ -19,6 +19,7 @@
 
 #include <map>
 #include <vector>
+#include <memory>
 
 #include "cartographer/common/port.h"
 #include "glog/logging.h"

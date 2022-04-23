@@ -17,9 +17,11 @@
 #ifndef CARTOGRAPHER_COMMON_PORT_H_
 #define CARTOGRAPHER_COMMON_PORT_H_
 
+#if 0
 #include <boost/iostreams/device/back_inserter.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
+#endif
 #include <cinttypes>
 #include <cmath>
 #include <string>
@@ -47,6 +49,7 @@ inline int64 RoundToInt64(const double x) { return std::lround(x); }
 
 inline void FastGzipString(const std::string& uncompressed,
                            std::string* compressed) {
+#if 0
   boost::iostreams::filtering_ostream out;
   out.push(
       boost::iostreams::gzip_compressor(boost::iostreams::zlib::best_speed));
@@ -54,15 +57,20 @@ inline void FastGzipString(const std::string& uncompressed,
   boost::iostreams::write(out,
                           reinterpret_cast<const char*>(uncompressed.data()),
                           uncompressed.size());
+#endif
+  *compressed = uncompressed;
 }
 
 inline void FastGunzipString(const std::string& compressed,
                              std::string* decompressed) {
+#if 0
   boost::iostreams::filtering_ostream out;
   out.push(boost::iostreams::gzip_decompressor());
   out.push(boost::iostreams::back_inserter(*decompressed));
   boost::iostreams::write(out, reinterpret_cast<const char*>(compressed.data()),
                           compressed.size());
+#endif
+  *decompressed = compressed;
 }
 
 }  // namespace common

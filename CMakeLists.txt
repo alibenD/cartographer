@@ -53,8 +53,8 @@ install(DIRECTORY configuration_files DESTINATION share/cartographer/)
 
 install(DIRECTORY cmake DESTINATION share/cartographer/)
 
-file(GLOB_RECURSE ALL_LIBRARY_HDRS "cartographer/*.h")
-file(GLOB_RECURSE TEST_LIBRARY_HDRS "cartographer/fake_*.h" "cartographer/*test_helpers*.h" "cartographer/mock_*.h")
+file(GLOB_RECURSE ALL_LIBRARY_HDRS "include/cartographer/*.h")
+file(GLOB_RECURSE TEST_LIBRARY_HDRS "include/cartographer/fake_*.h" "include/cartographer/*test_helpers*.h" "include/cartographer/mock_*.h")
 
 file(GLOB_RECURSE ALL_LIBRARY_SRCS "cartographer/*.cc")
 file(GLOB_RECURSE TEST_LIBRARY_SRCS "cartographer/fake_*.cc" "cartographer/*test_helpers*.cc" "cartographer/mock_*.cc")
@@ -67,7 +67,7 @@ list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_EXECUTABLES})
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_TESTS})
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${TEST_LIBRARY_SRCS})
 set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
-file(GLOB_RECURSE INTERNAL_HDRS "cartographer/*/internal/*.h")
+file(GLOB_RECURSE INTERNAL_HDRS "include/cartographer/*/internal/*.h")
 list(REMOVE_ITEM INSTALL_SOURCE_HDRS ${INTERNAL_HDRS})
 
 file(GLOB_RECURSE ALL_PROTOS "proto/cartographer/*.proto")
@@ -104,7 +104,7 @@ set(INSTALL_GENERATED_HDRS ${ALL_PROTO_HDRS})
 add_library(${PROJECT_NAME} STATIC ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_SRCS})
 
 configure_file(
-  ${PROJECT_SOURCE_DIR}/cartographer/common/config.h.cmake
+  ${PROJECT_SOURCE_DIR}/include/cartographer/common/config.h.cmake
   ${PROJECT_BINARY_DIR}/cartographer/common/config.h)
 
 google_binary(cartographer_autogenerate_ground_truth
@@ -205,7 +205,7 @@ endforeach()
 # been generated.
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 

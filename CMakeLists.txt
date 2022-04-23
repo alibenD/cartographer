@@ -58,7 +58,7 @@ file(GLOB_RECURSE TEST_LIBRARY_HDRS "include/cartographer/fake_*.h" "include/car
 
 file(GLOB_RECURSE ALL_LIBRARY_SRCS "cartographer/*.cc")
 file(GLOB_RECURSE TEST_LIBRARY_SRCS "cartographer/fake_*.cc" "cartographer/*test_helpers*.cc" "cartographer/mock_*.cc")
-file(GLOB_RECURSE ALL_TESTS "cartographer/*_test.cc")
+file(GLOB_RECURSE ALL_TESTS "tests/cartographer/*_test.cc")
 file(GLOB_RECURSE ALL_EXECUTABLES "cartographer/*_main.cc")
 
 # Remove dotfiles/-folders that could potentially pollute the build.

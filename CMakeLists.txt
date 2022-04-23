@@ -59,7 +59,7 @@ install(DIRECTORY cmake DESTINATION share/cartographer/)
 file(GLOB_RECURSE ALL_LIBRARY_HDRS "include/cartographer/*.h")
 #file(GLOB_RECURSE ALL_LIBRARY_SRCS "src/cartographer/*.cc")
 
-file(GLOB_RECURSE ALL_EXECUTABLES "example/cartographer/*_main.cc")
+#file(GLOB_RECURSE ALL_EXECUTABLES "example/cartographer/*_main.cc")
 
 file(GLOB_RECURSE ALL_PROTOS "proto/cartographer/*.proto")
 #file(GLOB_RECURSE ALL_PROTOS "cartographer/*.proto")
@@ -171,39 +171,40 @@ add_subdirectory(example)
 #set_target_properties(${PROJECT_NAME} PROPERTIES
 #  COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
 
-file(GLOB_RECURSE TEST_LIBRARY_HDRS "tests/include/cartographer/fake_*.h" "tests/include/cartographer/*test_helpers*.h" "tests/include/cartographer/mock_*.h")
-file(GLOB_RECURSE TEST_LIBRARY_SRCS "tests/cartographer/fake_*.cc" "tests/cartographer/*test_helpers*.cc" "tests/cartographer/mock_*.cc")
-file(GLOB_RECURSE ALL_TESTS "tests/cartographer/*_test.cc")
-# Remove dotfiles/-folders that could potentially pollute the build.
-set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
+#file(GLOB_RECURSE TEST_LIBRARY_HDRS "tests/include/cartographer/fake_*.h" "tests/include/cartographer/*test_helpers*.h" "tests/include/cartographer/mock_*.h")
+#file(GLOB_RECURSE TEST_LIBRARY_SRCS "tests/cartographer/fake_*.cc" "tests/cartographer/*test_helpers*.cc" "tests/cartographer/mock_*.cc")
+#file(GLOB_RECURSE ALL_TESTS "tests/cartographer/*_test.cc")
+## Remove dotfiles/-folders that could potentially pollute the build.
+#set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
 file(GLOB_RECURSE INTERNAL_HDRS "include/cartographer/*/internal/*.h")
 list(REMOVE_ITEM INSTALL_SOURCE_HDRS ${INTERNAL_HDRS})
 
+add_subdirectory(tests)
 
-set(TEST_LIB
-  cartographer_test_library
-)
-add_library(${TEST_LIB} ${TEST_LIBRARY_HDRS} ${TEST_LIBRARY_SRCS})
-target_include_directories(${TEST_LIB} SYSTEM PRIVATE
-  "${GMOCK_INCLUDE_DIRS}"
-  ${PROJECT_SOURCE_DIR}/tests/include
-  )
-# Needed for dynamically linked GTest on Windows.
-target_compile_definitions(${TEST_LIB} PUBLIC -DGTEST_LINKED_AS_SHARED_LIBRARY)
-target_link_libraries(${TEST_LIB} PUBLIC ${GMOCK_LIBRARY})
-target_link_libraries(${TEST_LIB} PUBLIC ${PROJECT_NAME})
-set_target_properties(${TEST_LIB} PROPERTIES
-  COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
-
-foreach(ABS_FIL ${ALL_TESTS})
-  file(RELATIVE_PATH REL_FIL ${PROJECT_SOURCE_DIR} ${ABS_FIL})
-  get_filename_component(DIR ${REL_FIL} DIRECTORY)
-  get_filename_component(FIL_WE ${REL_FIL} NAME_WE)
-  # Replace slashes as required for CMP0037.
-  string(REPLACE "/" "." TEST_TARGET_NAME "${DIR}/${FIL_WE}")
-  google_test("${TEST_TARGET_NAME}" ${ABS_FIL})
-  target_link_libraries("${TEST_TARGET_NAME}" PUBLIC ${TEST_LIB})
-endforeach()
+#set(TEST_LIB
+#  cartographer_test_library
+#)
+#add_library(${TEST_LIB} ${TEST_LIBRARY_HDRS} ${TEST_LIBRARY_SRCS})
+#target_include_directories(${TEST_LIB} SYSTEM PRIVATE
+#  "${GMOCK_INCLUDE_DIRS}"
+#  ${PROJECT_SOURCE_DIR}/tests/include
+#  )
+## Needed for dynamically linked GTest on Windows.
+#target_compile_definitions(${TEST_LIB} PUBLIC -DGTEST_LINKED_AS_SHARED_LIBRARY)
+#target_link_libraries(${TEST_LIB} PUBLIC ${GMOCK_LIBRARY})
+#target_link_libraries(${TEST_LIB} PUBLIC ${PROJECT_NAME})
+#set_target_properties(${TEST_LIB} PROPERTIES
+#  COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
+#
+#foreach(ABS_FIL ${ALL_TESTS})
+#  file(RELATIVE_PATH REL_FIL ${PROJECT_SOURCE_DIR} ${ABS_FIL})
+#  get_filename_component(DIR ${REL_FIL} DIRECTORY)
+#  get_filename_component(FIL_WE ${REL_FIL} NAME_WE)
+#  # Replace slashes as required for CMP0037.
+#  string(REPLACE "/" "." TEST_TARGET_NAME "${DIR}/${FIL_WE}")
+#  google_test("${TEST_TARGET_NAME}" ${ABS_FIL})
+#  target_link_libraries("${TEST_TARGET_NAME}" PUBLIC ${TEST_LIB})
+#endforeach()
 
 # Add the binary directory first, so that port.h is included after it has
 # been generated.

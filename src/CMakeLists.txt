@@ -4,11 +4,12 @@
 # @filename: CMakeLists.txt
 # @author: aliben.develop@gmail.com
 # @create_date: 2022-04-23 18:13:24
-# @last_modified_date: 2022-04-23 18:51:58
+# @last_modified_date: 2022-04-23 19:15:51
 # @description: TODO
 #---****************************************************************---
 set(ALL_PROTO_SRCS)
 set(ALL_PROTO_HDRS)
+
 foreach(ABS_FIL ${ALL_PROTOS})
   file(RELATIVE_PATH REL_FIL ${PROJECT_SOURCE_DIR}/proto ${ABS_FIL})
   get_filename_component(DIR ${REL_FIL} DIRECTORY)
@@ -29,6 +30,8 @@ foreach(ABS_FIL ${ALL_PROTOS})
   )
 endforeach()
 set_source_files_properties(${ALL_PROTO_SRCS} ${ALL_PROTO_HDRS} PROPERTIES GENERATED TRUE)
+
+file(GLOB_RECURSE ALL_LIBRARY_SRCS "cartographer/*.cc")
 list(APPEND ALL_LIBRARY_HDRS ${ALL_PROTO_HDRS})
 list(APPEND ALL_LIBRARY_SRCS ${ALL_PROTO_SRCS})
 

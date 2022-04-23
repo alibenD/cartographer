@@ -57,7 +57,7 @@ install(DIRECTORY configuration_files DESTINATION share/cartographer/)
 install(DIRECTORY cmake DESTINATION share/cartographer/)
 
 file(GLOB_RECURSE ALL_LIBRARY_HDRS "include/cartographer/*.h")
-file(GLOB_RECURSE ALL_LIBRARY_SRCS "src/cartographer/*.cc")
+#file(GLOB_RECURSE ALL_LIBRARY_SRCS "src/cartographer/*.cc")
 
 file(GLOB_RECURSE ALL_EXECUTABLES "example/cartographer/*_main.cc")
 

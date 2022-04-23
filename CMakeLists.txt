@@ -16,6 +16,12 @@ cmake_minimum_required(VERSION 3.2)
 
 project(cartographer)
 
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache) # Less useful to do it for linking, see edit2
+endif(CCACHE_FOUND)
+
 set(CARTOGRAPHER_MAJOR_VERSION 1)
 set(CARTOGRAPHER_MINOR_VERSION 0)
 set(CARTOGRAPHER_PATCH_VERSION 0)
@@ -28,10 +34,6 @@ google_enable_testing()
 
 find_package(absl REQUIRED)
 set(BOOST_COMPONENTS iostreams)
-if(WIN32)
-  list(APPEND BOOST_COMPONENTS zlib)
-  set(Boost_USE_STATIC_LIBS FALSE)
-endif()
 find_package(Boost REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 find_package(Ceres REQUIRED COMPONENTS SuiteSparse)
 find_package(Eigen3 REQUIRED)
@@ -63,19 +65,11 @@ list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_EXECUTABLES})
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_TESTS})
 list(REMOVE_ITEM ALL_LIBRARY_HDRS ${TEST_LIBRARY_HDRS})
 list(REMOVE_ITEM ALL_LIBRARY_SRCS ${TEST_LIBRARY_SRCS})
-file(GLOB_RECURSE ALL_GRPC_FILES "cartographer/cloud/*")
-file(GLOB_RECURSE ALL_PROMETHEUS_FILES "cartographer/cloud/metrics/prometheus/*")
-list(REMOVE_ITEM ALL_GRPC_FILES ${ALL_PROMETHEUS_FILES})
 set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
 file(GLOB_RECURSE INTERNAL_HDRS "cartographer/*/internal/*.h")
 list(REMOVE_ITEM INSTALL_SOURCE_HDRS ${INTERNAL_HDRS})
 
 file(GLOB_RECURSE ALL_PROTOS "cartographer/*.proto")
-file(GLOB_RECURSE ALL_GRPC_SERVICES "cartographer/*_service.proto")
-list(REMOVE_ITEM ALL_PROTOS ALL_GRPC_SERVICES)
-if (NOT ${BUILD_GRPC})
-  list(REMOVE_ITEM ALL_PROTOS ${ALL_GRPC_FILES})
-endif()
 
 # TODO(cschuet): Move proto compilation to separate function.
 set(ALL_PROTO_SRCS)
@@ -103,7 +97,7 @@ set_source_files_properties(${ALL_PROTO_SRCS} ${ALL_PROTO_HDRS} PROPERTIES GENER
 list(APPEND ALL_LIBRARY_HDRS ${ALL_PROTO_HDRS})
 list(APPEND ALL_LIBRARY_SRCS ${ALL_PROTO_SRCS})
 
-set(INSTALL_GENERATED_HDRS ${ALL_PROTO_HDRS} ${ALL_GRPC_SERVICE_HDRS})
+set(INSTALL_GENERATED_HDRS ${ALL_PROTO_HDRS})
 
 add_library(${PROJECT_NAME} STATIC ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_SRCS})
 
@@ -151,14 +145,6 @@ set(GLOG_LIBRARY glog)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${GLOG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} PUBLIC gflags)
-if(WIN32)
-  # Needed to fix conflict with MSVC's error macro.
-  target_compile_definitions(${PROJECT_NAME} PUBLIC -DGLOG_NO_ABBREVIATED_SEVERITIES)
-endif()
-if(MSVC)
-  # Needed for VS 2017 5.8
-  target_compile_definitions(${PROJECT_NAME} PUBLIC -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_USE_MATH_DEFINES)
-endif()
 
 if("${CAIRO_INCLUDE_DIRS}")
   target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC

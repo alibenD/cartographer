@@ -59,7 +59,7 @@ file(GLOB_RECURSE TEST_LIBRARY_HDRS "include/cartographer/fake_*.h" "include/car
 file(GLOB_RECURSE ALL_LIBRARY_SRCS "cartographer/*.cc")
 file(GLOB_RECURSE TEST_LIBRARY_SRCS "cartographer/fake_*.cc" "cartographer/*test_helpers*.cc" "cartographer/mock_*.cc")
 file(GLOB_RECURSE ALL_TESTS "tests/cartographer/*_test.cc")
-file(GLOB_RECURSE ALL_EXECUTABLES "cartographer/*_main.cc")
+file(GLOB_RECURSE ALL_EXECUTABLES "example/cartographer/*_main.cc")
 
 # Remove dotfiles/-folders that could potentially pollute the build.
 list(REMOVE_ITEM ALL_LIBRARY_HDRS ${TEST_LIBRARY_HDRS})
@@ -109,22 +109,22 @@ configure_file(
 
 google_binary(cartographer_autogenerate_ground_truth
   SRCS
-    cartographer/ground_truth/autogenerate_ground_truth_main.cc
+    example/autogenerate_ground_truth_main.cc
 )
 
 google_binary(cartographer_compute_relations_metrics
   SRCS
-    cartographer/ground_truth/compute_relations_metrics_main.cc
+    example/compute_relations_metrics_main.cc
 )
 
 google_binary(cartographer_pbstream
   SRCS
-  cartographer/io/pbstream_main.cc
+    example/pbstream_main.cc
 )
 
 google_binary(cartographer_print_configuration
   SRCS
-  cartographer/common/print_configuration_main.cc
+    example/print_configuration_main.cc
 )
 
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC

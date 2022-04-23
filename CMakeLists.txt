@@ -92,31 +92,33 @@ file(GLOB_RECURSE ALL_PROTOS "proto/cartographer/*.proto")
 #set(INSTALL_GENERATED_HDRS ${ALL_PROTO_HDRS})
 
 #add_library(${PROJECT_NAME} STATIC ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_SRCS})
-add_subdirectory(src)
 
 configure_file(
   ${PROJECT_SOURCE_DIR}/include/cartographer/common/config.h.cmake
   ${PROJECT_BINARY_DIR}/cartographer/common/config.h)
 
-google_binary(cartographer_autogenerate_ground_truth
-  SRCS
-    example/autogenerate_ground_truth_main.cc
-)
+add_subdirectory(src)
+add_subdirectory(example)
 
-google_binary(cartographer_compute_relations_metrics
-  SRCS
-    example/compute_relations_metrics_main.cc
-)
-
-google_binary(cartographer_pbstream
-  SRCS
-    example/pbstream_main.cc
-)
-
-google_binary(cartographer_print_configuration
-  SRCS
-    example/print_configuration_main.cc
-)
+#google_binary(cartographer_autogenerate_ground_truth
+#  SRCS
+#    example/autogenerate_ground_truth_main.cc
+#)
+#
+#google_binary(cartographer_compute_relations_metrics
+#  SRCS
+#    example/compute_relations_metrics_main.cc
+#)
+#
+#google_binary(cartographer_pbstream
+#  SRCS
+#    example/pbstream_main.cc
+#)
+#
+#google_binary(cartographer_print_configuration
+#  SRCS
+#    example/print_configuration_main.cc
+#)
 
 #target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
 #  "${EIGEN3_INCLUDE_DIR}")

@@ -38,7 +38,9 @@ function(google_test NAME ARG_SRC)
 
   # Make sure that gmock always includes the correct gtest/gtest.h.
   target_include_directories("${NAME}" SYSTEM PRIVATE
-    "${GMOCK_INCLUDE_DIRS}")
+    "${GMOCK_INCLUDE_DIRS}"
+    ${PROJECT_SOURCE_DIR}/tests/include
+    )
   target_link_libraries("${NAME}" PUBLIC ${GMOCK_LIBRARIES})
 
   add_test(${NAME} ${NAME})

@@ -54,21 +54,9 @@ install(DIRECTORY configuration_files DESTINATION share/cartographer/)
 install(DIRECTORY cmake DESTINATION share/cartographer/)
 
 file(GLOB_RECURSE ALL_LIBRARY_HDRS "include/cartographer/*.h")
-file(GLOB_RECURSE TEST_LIBRARY_HDRS "include/cartographer/fake_*.h" "include/cartographer/*test_helpers*.h" "include/cartographer/mock_*.h")
-
 file(GLOB_RECURSE ALL_LIBRARY_SRCS "cartographer/*.cc")
-file(GLOB_RECURSE TEST_LIBRARY_SRCS "cartographer/fake_*.cc" "cartographer/*test_helpers*.cc" "cartographer/mock_*.cc")
-file(GLOB_RECURSE ALL_TESTS "tests/cartographer/*_test.cc")
-file(GLOB_RECURSE ALL_EXECUTABLES "example/cartographer/*_main.cc")
 
-# Remove dotfiles/-folders that could potentially pollute the build.
-list(REMOVE_ITEM ALL_LIBRARY_HDRS ${TEST_LIBRARY_HDRS})
-list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_EXECUTABLES})
-list(REMOVE_ITEM ALL_LIBRARY_SRCS ${ALL_TESTS})
-list(REMOVE_ITEM ALL_LIBRARY_SRCS ${TEST_LIBRARY_SRCS})
-set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
-file(GLOB_RECURSE INTERNAL_HDRS "include/cartographer/*/internal/*.h")
-list(REMOVE_ITEM INSTALL_SOURCE_HDRS ${INTERNAL_HDRS})
+file(GLOB_RECURSE ALL_EXECUTABLES "example/cartographer/*_main.cc")
 
 file(GLOB_RECURSE ALL_PROTOS "proto/cartographer/*.proto")
 #file(GLOB_RECURSE ALL_PROTOS "cartographer/*.proto")
@@ -178,12 +166,23 @@ set(TARGET_COMPILE_FLAGS "${TARGET_COMPILE_FLAGS} ${GOOG_CXX_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES
   COMPILE_FLAGS ${TARGET_COMPILE_FLAGS})
 
+file(GLOB_RECURSE TEST_LIBRARY_HDRS "tests/include/cartographer/fake_*.h" "tests/include/cartographer/*test_helpers*.h" "tests/include/cartographer/mock_*.h")
+file(GLOB_RECURSE TEST_LIBRARY_SRCS "tests/cartographer/fake_*.cc" "tests/cartographer/*test_helpers*.cc" "tests/cartographer/mock_*.cc")
+file(GLOB_RECURSE ALL_TESTS "tests/cartographer/*_test.cc")
+# Remove dotfiles/-folders that could potentially pollute the build.
+set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
+file(GLOB_RECURSE INTERNAL_HDRS "include/cartographer/*/internal/*.h")
+list(REMOVE_ITEM INSTALL_SOURCE_HDRS ${INTERNAL_HDRS})
+
+
 set(TEST_LIB
   cartographer_test_library
 )
 add_library(${TEST_LIB} ${TEST_LIBRARY_HDRS} ${TEST_LIBRARY_SRCS})
 target_include_directories(${TEST_LIB} SYSTEM PRIVATE
-  "${GMOCK_INCLUDE_DIRS}")
+  "${GMOCK_INCLUDE_DIRS}"
+  ${PROJECT_SOURCE_DIR}/tests/include
+  )
 # Needed for dynamically linked GTest on Windows.
 target_compile_definitions(${TEST_LIB} PUBLIC -DGTEST_LINKED_AS_SHARED_LIBRARY)
 target_link_libraries(${TEST_LIB} PUBLIC ${GMOCK_LIBRARY})

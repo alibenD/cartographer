@@ -1,0 +1,7 @@
+if(NOT CMAKE_TOOLCHAIN_FILE)
+  find_package(Protobuf 3.0.0 REQUIRED)
+else()
+  set(Protobuf_DIR ${CMAKE_BINARY_DIR}/lib/cmake/protobuf)
+  find_package(Protobuf NO_MODULE)
+  set(PROTOBUF_PROTOC_EXECUTABLE /usr/bin/protoc)
+endif()

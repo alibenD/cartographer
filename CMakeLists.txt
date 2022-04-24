@@ -31,20 +31,27 @@ set(CARTOGRAPHER_SOVERSION ${CARTOGRAPHER_MAJOR_VERSION}.${CARTOGRAPHER_MINOR_VE
 
 include("${PROJECT_SOURCE_DIR}/cmake/functions.cmake")
 google_initialize_cartographer_project()
-google_enable_testing()
+if(NOT CMAKE_TOOLCHAIN_FILE)
+  google_enable_testing()
+endif()
 
 set(TARGET_COMPILE_FLAGS "${TARGET_COMPILE_FLAGS} ${GOOG_CXX_FLAGS}")
 
-find_package(absl REQUIRED)
+find_package(abslIntern REQUIRED)
 #set(BOOST_COMPONENTS iostreams)
 #find_package(Boost REQUIRED COMPONENTS ${BOOST_COMPONENTS})
-find_package(Ceres REQUIRED COMPONENTS SuiteSparse)
+#find_package(Ceres REQUIRED COMPONENTS SuiteSparse)
+find_package(CeresIntern REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(LuaGoogle REQUIRED)
-find_package(Protobuf 3.0.0 REQUIRED)
+#find_package(LuaGoogle REQUIRED)
+find_package(LuaIntern REQUIRED)
+#find_package(Protobuf 3.0.0 REQUIRED)
+find_package(ProtobufIntern REQUIRED)
 
 include(FindPkgConfig)
+if(NOT CMAKE_TOOLCHAIN_FILE)
 find_library(CAIRO_LIBRARIES cairo)
+endif()
 
 # Install catkin package.xml
 install(FILES package.xml DESTINATION share/cartographer)
@@ -175,11 +182,13 @@ add_subdirectory(example)
 #file(GLOB_RECURSE TEST_LIBRARY_SRCS "tests/cartographer/fake_*.cc" "tests/cartographer/*test_helpers*.cc" "tests/cartographer/mock_*.cc")
 #file(GLOB_RECURSE ALL_TESTS "tests/cartographer/*_test.cc")
 ## Remove dotfiles/-folders that could potentially pollute the build.
-#set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
+set(INSTALL_SOURCE_HDRS ${ALL_LIBRARY_HDRS} ${TEST_LIBRARY_HDRS})
 file(GLOB_RECURSE INTERNAL_HDRS "include/cartographer/*/internal/*.h")
 list(REMOVE_ITEM INSTALL_SOURCE_HDRS ${INTERNAL_HDRS})
 
+if(NOT CMAKE_TOOLCHAIN_FILE)
 add_subdirectory(tests)
+endif()
 
 #set(TEST_LIB
 #  cartographer_test_library
@@ -223,7 +232,7 @@ install(
 )
 
 foreach(HDR ${INSTALL_SOURCE_HDRS})
-  file(RELATIVE_PATH REL_FIL ${PROJECT_SOURCE_DIR} ${HDR})
+  file(RELATIVE_PATH REL_FIL ${PROJECT_SOURCE_DIR}/include ${HDR})
   get_filename_component(DIR ${REL_FIL} DIRECTORY)
   install(
     FILES ${HDR}

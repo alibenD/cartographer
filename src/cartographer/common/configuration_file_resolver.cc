@@ -43,6 +43,7 @@ std::string ConfigurationFileResolver::GetFullPathOrDie(
     }
   }
   LOG(FATAL) << "File '" << basename << "' was not found.";
+  return "";
 }
 
 std::string ConfigurationFileResolver::GetFileContentOrDie(

@@ -1,0 +1,6 @@
+if(NOT CMAKE_TOOLCHAIN_FILE)
+  find_package(absl REQUIRED)
+else()
+  set(absl_DIR ${CMAKE_BINARY_DIR}/lib/cmake/absl)
+  find_package(absl NO_MODULE)
+endif()

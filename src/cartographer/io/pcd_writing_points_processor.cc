@@ -106,6 +106,7 @@ PointsProcessor::FlushResult PcdWritingPointsProcessor::Flush() {
                     "stages that require multiple passes.";
   }
   LOG(FATAL);
+  return {};
 }
 
 void PcdWritingPointsProcessor::Process(std::unique_ptr<PointsBatch> batch) {

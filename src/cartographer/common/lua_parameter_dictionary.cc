@@ -329,6 +329,7 @@ std::string LuaParameterDictionary::DoToString(
       } break;
       default:
         LOG(FATAL) << "Unhandled type " << lua_typename(L_, value_type);
+        return {};
     }
   };
 

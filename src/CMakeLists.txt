@@ -4,7 +4,7 @@
 # @filename: CMakeLists.txt
 # @author: aliben.develop@gmail.com
 # @create_date: 2022-04-23 18:13:24
-# @last_modified_date: 2022-04-23 19:15:51
+# @last_modified_date: 2022-04-25 00:07:17
 # @description: TODO
 #---****************************************************************---
 set(ALL_PROTO_SRCS)
@@ -35,7 +35,20 @@ file(GLOB_RECURSE ALL_LIBRARY_SRCS "cartographer/*.cc")
 list(APPEND ALL_LIBRARY_HDRS ${ALL_PROTO_HDRS})
 list(APPEND ALL_LIBRARY_SRCS ${ALL_PROTO_SRCS})
 
-set(INSTALL_GENERATED_HDRS ${ALL_PROTO_HDRS})
+if(CMAKE_TOOLCHAIN_FILE)
+  list(APPEND CAIRO_SRCS
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/probability_grid_points_processor.cc
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/points_processor_pipeline_builder.cc
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/xyz_writing_points_processor.cc
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/ply_writing_points_processor.cc
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/xray_points_processor.cc
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/draw_trajectories.cc
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/submap_painter.cc
+      ${PROJECT_SOURCE_DIR}/src/cartographer/io/image.cc
+    )
+  list(REMOVE_ITEM ALL_LIBRARY_SRCS ${CAIRO_SRCS})
+endif()
+set(INSTALL_GENERATED_HDRS ${ALL_PROTO_HDRS} PARENT_SCOPE)
 
 add_library(${PROJECT_NAME} STATIC ${ALL_LIBRARY_HDRS} ${ALL_LIBRARY_SRCS})
 target_include_directories(${PROJECT_NAME}
@@ -44,7 +57,7 @@ target_include_directories(${PROJECT_NAME}
     ${CERES_INCLUDE_DIRS}
     ${LUA_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
-    ${CAIRO_INCLUDE_DIRS}
+    $<$<BOOL:CMAKE_TOOLCHAIN_FILE>:${CAIRO_INCLUDE_DIRS}>
     ${PROTOBUF_INCLUDE_DIR}
   )
 
@@ -56,7 +69,7 @@ target_link_libraries(${PROJECT_NAME}
     ${Boost_LIBRARIES}
     glog
     gflags
-    ${CAIRO_LIBRARIES}
+    $<$<BOOL:CMAKE_TOOLCHAIN_FILE>:${CAIRO_LIBRARIES}>
     ${PROTOBUF_LIBRARY}
     absl::algorithm
     absl::base

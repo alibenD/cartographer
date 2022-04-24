@@ -1,0 +1,6 @@
+if(NOT CMAKE_TOOLCHAIN_FILE)
+  find_package(Ceres REQUIRED)
+else()
+  set(Ceres_DIR ${CMAKE_BINARY_DIR}/lib/cmake/Ceres)
+  find_package(Ceres NO_MODULE)
+endif()

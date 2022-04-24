@@ -1,0 +1,6 @@
+if(NOT CMAKE_TOOLCHAIN_FILE)
+  find_package(LuaGoogle REQUIRED)
+else()
+  set(LUA_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
+  set(LUA_LIBRARIES ${CMAKE_BINARY_DIR}/lib/liblua.a)
+endif()

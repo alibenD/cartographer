@@ -46,6 +46,7 @@ PoseGraph::Constraint::Tag FromProto(
     case ::google::protobuf::kint32min: {
     }
   }
+  return {};
   LOG(FATAL) << "Unsupported tag.";
 }
 

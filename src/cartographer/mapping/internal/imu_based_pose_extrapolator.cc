@@ -315,7 +315,7 @@ ImuBasedPoseExtrapolator::ExtrapolatePosesWithGravity(
   // Solve.
   ceres::Solver::Summary summary;
   ceres::Solve(solver_options_, &problem, &summary);
-  LOG_IF_EVERY_N(INFO, !fix_gravity, 20) << "Gravity was: " << gravity_constant;
+  //LOG_IF_EVERY_N(INFO, !fix_gravity, 20) << "Gravity was: " << gravity_constant;
 
   const auto gravity_estimate = nodes.back().ToRigid().rotation();
 

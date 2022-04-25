@@ -4,7 +4,7 @@
 # @filename: CMakeLists.txt
 # @author: aliben.develop@gmail.com
 # @create_date: 2022-04-23 18:13:24
-# @last_modified_date: 2022-04-25 00:07:17
+# @last_modified_date: 2022-04-25 21:37:50
 # @description: TODO
 #---****************************************************************---
 set(ALL_PROTO_SRCS)
@@ -56,8 +56,8 @@ target_include_directories(${PROJECT_NAME}
     ${EIGEN3_INCLUDE_DIR}
     ${CERES_INCLUDE_DIRS}
     ${LUA_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS}
-    $<$<BOOL:CMAKE_TOOLCHAIN_FILE>:${CAIRO_INCLUDE_DIRS}>
+    $<$<NOT:$<BOOL:${CMAKE_TOOLCHAIN_FILE}>>:${Boost_INCLUDE_DIRS}>
+    $<$<NOT:$<BOOL:${CMAKE_TOOLCHAIN_FILE}>>:${CAIRO_INCLUDE_DIRS}>
     ${PROTOBUF_INCLUDE_DIR}
   )
 
@@ -67,9 +67,10 @@ target_link_libraries(${PROJECT_NAME}
     ${CERES_LIBRARIES}
     ${LUA_LIBRARIES}
     ${Boost_LIBRARIES}
-    glog
-    gflags
-    $<$<BOOL:CMAKE_TOOLCHAIN_FILE>:${CAIRO_LIBRARIES}>
+    ${gflags_LIBRARIES}
+    $<$<NOT:$<BOOL:${CMAKE_TOOLCHAIN_FILE}>>:${CAIRO_LIBRARIES}>
+    $<$<BOOL:${CMAKE_TOOLCHAIN_FILE}>:${CMAKE_BINARY_DIR}/lib/libprotobuf.a>
+    $<$<BOOL:${CMAKE_TOOLCHAIN_FILE}>:log>
     ${PROTOBUF_LIBRARY}
     absl::algorithm
     absl::base
@@ -83,7 +84,7 @@ target_link_libraries(${PROJECT_NAME}
     absl::synchronization
     absl::time
     absl::utility
-    pthread
+    Threads::Threads
   )
 
 #set(TARGET_COMPILE_FLAGS "${TARGET_COMPILE_FLAGS} ${GOOG_CXX_FLAGS}")

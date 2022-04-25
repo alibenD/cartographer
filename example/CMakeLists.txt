@@ -4,9 +4,14 @@
 # @filename: CMakeLists.txt
 # @author: aliben.develop@gmail.com
 # @create_date: 2022-04-23 18:42:28
-# @last_modified_date: 2022-04-24 22:50:00
+# @last_modified_date: 2022-04-25 21:32:35
 # @description: TODO
 #---****************************************************************---
+
+google_binary(cartographer_autogenerate_ground_truth_without_g
+  SRCS
+    autogenerate_ground_truth_main_without_g.cc
+)
 
 if(NOT CMAKE_TOOLCHAIN_FILE)
 google_binary(cartographer_autogenerate_ground_truth
